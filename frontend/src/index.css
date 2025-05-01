@@ -1,0 +1,42 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 18px; /* Kích thước font gốc */
+}
+
+/* Default Light Theme */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --text-color-reverse: #eaeaea;
+  --header-bg: #f5f5f5;
+  --btn-bg: #168ca9;
+  --btn-bg-hover: #6cbac0;
+  --tittle-header: #003247;
+  --footer-bg: #f0f0f0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* Dark Theme */
+[data-theme='dark'] {
+  --bg-color: #1e1e1e;
+  --text-color: #eaeaea;
+  --text-color-reverse: #000000;
+  --header-bg: #003247;
+  --btn-bg: #6bf0ca;
+  --btn-bg-hover: #168ca9;
+  --tittle-header: #eaeaea;
+  --footer-bg: #003247;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+}

@@ -1,0 +1,65 @@
+.header {
+    display: flex;
+    justify-content: space-between; /* Đảm bảo logo và button log out nằm ở hai đầu */
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--header-bg);;
+    color: var(--text-color);
+    border-bottom: 1px solid #168ca9;
+  }
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    height: 80px; /* Kích thước logo */
+    width: auto;
+}
+
+.header-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 26px;
+    font-weight: bold;
+    color: var(--tittle-header);
+}
+
+.theme-toggle {
+    padding-left: 10px;
+}
+
+.logout-button {
+  background-color: var(--btn-bg);
+  color: var(--text-color-reverse);
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 50px;
+  font-size: 1rem;
+}
+
+/* .logout-button:hover {
+    background-color: #6cbac0;
+} */
+
+.logout-button:hover {
+  background-color: var(--btn-bg-hover);
+  color: var(--text-color-reverse);
+}
+
+.theme-icon {
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text-color);
+  margin-left: 12px;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.theme-icon:hover {
+  transform: rotate(20deg);
+  color: #ffb300;
+}
