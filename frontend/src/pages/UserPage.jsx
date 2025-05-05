@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import loginHistoryService from '.././services/loginHistoryService';
+import axios from 'axios';
 
 function UserPage() {
   // Dữ liệu giả lập về lịch sử đăng nhập
@@ -10,20 +11,33 @@ function UserPage() {
   // ]
 
   const [loginHistory, setLoginHistory] = useState([])
+  const [loginId, setLoginId] = useState('');
+  // const loginId = 'user1' // mặc định
 
-  const loginId = 'user1' // mặc định
+  // Lấy loginId khi component load
+  useEffect(() => {
+    axios.get('http://localhost:3000/api/me', { withCredentials: true })
+      .then(response => {
+        setLoginId(response.data.loginId); // ✅ Lấy loginId từ token đã decode ở backend
+      })
+      .catch(error => {
+        console.error('Lỗi lấy user info:', error);
+      });
+  }, []);
 
   useEffect(() => {
-    loginHistoryService.getByLoginId(loginId).then(data => {
-      // Chuyển đổi dữ liệu thành định dạng ngày/tháng/năm và giờ
-      const formattedData = data.map(entry => ({
-        app: entry.app,
-        date: new Date(entry.last_login).toLocaleDateString(),
-        time: new Date(entry.last_login).toLocaleTimeString()
-
-      }));
-      setLoginHistory(formattedData);
-    });
+    if (loginId) {
+        loginHistoryService.getByLoginId(loginId).then(data => {
+          // Chuyển đổi dữ liệu thành định dạng ngày/tháng/năm và giờ
+          const formattedData = data.map(entry => ({
+            app: entry.app,
+            date: new Date(entry.last_login).toLocaleDateString(),
+            time: new Date(entry.last_login).toLocaleTimeString()
+    
+          }));
+          setLoginHistory(formattedData);
+        });
+    }
   }, [loginId]);
 
   return (

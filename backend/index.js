@@ -30,7 +30,7 @@ function authenticateJWT(req, res, next) {
   if (authHeader) {
       const token = authHeader.split(' ')[1]; // Tách 'Bearer <token>'
 
-      jwt.verify(token, JWT_SECRET, (err, user) => {
+      jwt.verify(token, JWT_SECRET, (err) => {
           if (err) {
               return res.sendStatus(403); // Forbidden
           }
@@ -72,6 +72,14 @@ app.get('/', authenticateJWT, (req, res) => {
     message: 'Đã xác thực thành công!',
     email: req.user.email,
     loginId: req.user.loginId,
+    roles: req.user.roles
+  });
+});
+
+app.get('/api/me', authenticateJWT, (req, res) => {
+  res.json({
+    loginId: req.user.loginId,
+    email: req.user.email,
     roles: req.user.roles
   });
 });
