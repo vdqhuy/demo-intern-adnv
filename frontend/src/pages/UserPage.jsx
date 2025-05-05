@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import loginHistoryService from '.././services/loginHistoryService';
 
 function UserPage() {
   // Dữ liệu giả lập về lịch sử đăng nhập
@@ -9,41 +10,21 @@ function UserPage() {
   // ]
 
   const [loginHistory, setLoginHistory] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
 
-  const loginId = 'huy123' // mặc định
+  const loginId = 'user1' // mặc định
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch('http://localhost:3000/api/histories/loginId/huy123')
-        const data = await res.json()
+    loginHistoryService.getByLoginId(loginId).then(data => {
+      // Chuyển đổi dữ liệu thành định dạng ngày/tháng/năm và giờ
+      const formattedData = data.map(entry => ({
+        app: entry.app,
+        date: new Date(entry.last_login).toLocaleDateString(),
+        time: new Date(entry.last_login).toLocaleTimeString()
 
-        const formatted = data.map(entry => {
-          const dateObj = new Date(entry.last_login)
-          const date = dateObj.toLocaleDateString('en-CA') // yyyy-mm-dd
-          const time = dateObj.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-          })
-
-          return {
-            app: 'Unknown',
-            date,
-            time
-          }
-        })
-
-        setLoginHistory(formatted)
-      } catch (err) {
-        console.error('Failed to fetch login history:', err)
-      }
-    }
-
-    fetchData()
-  }, [])
+      }));
+      setLoginHistory(formattedData);
+    });
+  }, [loginId]);
 
   return (
     <main className="main">

@@ -1,39 +1,22 @@
 import React, { useEffect, useState } from 'react'
+import loginHistoryService from '../services/loginHistoryService';
 
 function AdminPage() {
   const [loginHistory, setLoginHistory] = useState([])
 
+  // Lấy tất cả lịch sử đăng nhập khi component được load
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch('http://localhost:3000/api/histories') // Gọi toàn bộ lịch sử
-        const data = await res.json()
-
-        const formatted = data.map(entry => {
-          const dateObj = new Date(entry.last_login)
-          const date = dateObj.toLocaleDateString('en-CA') // yyyy-mm-dd
-          const time = dateObj.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-          })
-
-          return {
-            loginId: entry.User?.login_id || 'Unknown',
-            app: 'Unknown',
-            date,
-            time
-          }
-        })
-
-        setLoginHistory(formatted)
-      } catch (err) {
-        console.error('Failed to fetch login history:', err)
-      }
-    }
-
-    fetchData()
-  }, [])
+    loginHistoryService.getAll().then(data => {
+      // Chuyển đổi dữ liệu thành định dạng ngày/tháng/năm và giờ
+      const formattedData = data.map(entry => ({
+        loginId: entry.login_id,
+        app: entry.app,
+        date: new Date(entry.last_login).toLocaleDateString(),
+        time: new Date(entry.last_login).toLocaleTimeString()
+      }));
+      setLoginHistory(formattedData);
+    });
+  }, []);
 
   return (
     <main className="main">

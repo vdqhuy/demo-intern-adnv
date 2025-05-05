@@ -1,15 +1,66 @@
-require('dotenv').config();
 const express = require('express');
-const cors = require('cors')
+const bodyParser = require('body-parser');
+const sequelize = require('./config/database');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = '7Hnl/THVafYYlT8dzHPSiyNNb4KBTR+DGbt9GpIVyd7eE6vszauXc7wTVHqyDVxSywD3FHmffmgNlLA7nNaPjA==';
+
+const loginHistoryRoutes = require('./routes/loginHistoryRoutes');
+
+function decodeAndVerifyJWT(token_base64, secret_key) {
+
+  var decode = jwt.verify(token_base64, secret_key);
+  console.log(decode)
+  return decode;
+}
+
 const app = express();
-const db = require('./models');
-const loginHistoryRoutes = require('./routes/loginHistory.routes');
+app.use(bodyParser.json());
 
-app.use(cors({ origin: 'http://localhost:5173' }))
+const cors = require('cors')
+app.use(cors({ 
+  origin: 'http://localhost:5173',
+  credentials: true // Cho phép gửi cookie qua CORS
+ }))
 
-app.use(express.json());
-app.use('/api', loginHistoryRoutes);
+// ✅ Middleware kiểm tra & giải mã JWT
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['Authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Lấy phần sau "Bearer"
 
-db.sequelize.sync().then(() => {
-  app.listen(3000, () => console.log('Server started on port 3000'));
+  if (token == null) {
+    return res.status(401).json({ message: 'No token provided' });
+  }
+
+  jwt.verify(token, SECRET_KEY, (err, email) => {
+    if (err) {
+      console.log(err);
+      return res.status(403).json({ message: 'Invalid token' });
+    }
+    req.email = email; // ✅ Giải mã xong, gán vào req.user
+    next();
+  });
+}
+
+app.get('/', authenticateToken, (req, res) => {
+  res.json({
+    message: 'Đã xác thực thành công!',
+    email: req.email // Thông tin giải mã từ token
+  });
 });
+
+// Routes
+app.use('/api/login-history', loginHistoryRoutes);
+
+// Kết nối DB và khởi động server
+sequelize.authenticate()
+  .then(() => {
+    console.log('Kết nối database thành công.');
+    app.listen(3000, () => {
+      console.log('Server chạy ở http://localhost:3000');
+    });
+  })
+  .catch(err => {
+    console.error('Không kết nối được database:', err);
+  });
+
