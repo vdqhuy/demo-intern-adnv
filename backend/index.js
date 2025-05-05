@@ -23,9 +23,30 @@ app.use(cors({
   credentials: true // Cho phép gửi cookie qua CORS
  }))
 
+// Middleware để kiểm tra JWT token
+function authenticateJWT(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader) {
+      const token = authHeader.split(' ')[1]; // Tách 'Bearer <token>'
+
+      jwt.verify(token, JWT_SECRET, (err, user) => {
+          if (err) {
+              return res.sendStatus(403); // Forbidden
+          }
+
+          // Token hợp lệ, lưu thông tin user vào request
+          req.user = user;
+          next();
+      });
+  } else {
+      res.sendStatus(401); // Unauthorized
+  }
+}
+
 // ✅ Middleware kiểm tra & giải mã JWT
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['Authorization'];
+  const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Lấy phần sau "Bearer"
 
   if (token == null) {
@@ -42,7 +63,7 @@ function authenticateToken(req, res, next) {
   });
 }
 
-app.get('/', authenticateToken, (req, res) => {
+app.get('/', authenticateJWT, (req, res) => {
   res.json({
     message: 'Đã xác thực thành công!',
     email: req.email // Thông tin giải mã từ token
@@ -50,7 +71,7 @@ app.get('/', authenticateToken, (req, res) => {
 });
 
 // Routes
-app.use('/api/login-history', loginHistoryRoutes);
+app.use('/api/login-history', authenticateJWT, loginHistoryRoutes);
 
 // Kết nối DB và khởi động server
 sequelize.authenticate()
