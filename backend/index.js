@@ -36,7 +36,11 @@ function authenticateJWT(req, res, next) {
           }
 
           // Token hợp lệ, lưu thông tin user vào request
-          req.user = user;
+          req.user = {
+            email: decodedToken.email,
+            loginId: decodedToken.loginId,
+            roles: decodedToken.roles
+          };
           next();
       });
   } else {
@@ -66,7 +70,9 @@ function authenticateToken(req, res, next) {
 app.get('/', authenticateJWT, (req, res) => {
   res.json({
     message: 'Đã xác thực thành công!',
-    email: req.email // Thông tin giải mã từ token
+    email: req.user.email,
+    loginId: req.user.loginId,
+    roles: req.user.roles
   });
 });
 
