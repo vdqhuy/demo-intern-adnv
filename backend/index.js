@@ -8,38 +8,37 @@ const SECRET_KEY = '7Hnl/THVafYYlT8dzHPSiyNNb4KBTR+DGbt9GpIVyd7eE6vszauXc7wTVHqy
 const loginHistoryRoutes = require('./routes/loginHistoryRoutes');
 
 function decodeAndVerifyJWT(token_base64, secret_key) {
-
-  var decode = jwt.verify(token_base64, secret_key);
-  console.log(decode)
-  return decode;
+  const decoded = jwt.verify(token_base64, secret_key);
+  console.log(decoded);
+  return decoded;
 }
 
 const app = express();
 app.use(bodyParser.json());
 
-const cors = require('cors')
+const cors = require('cors');
 app.use(cors({ 
-  origin: 'http://localhost:5173',
-  credentials: true // Cho phép gửi cookie qua CORS
- }))
+  origin: 'http://iamwebapp.adnovumlabs.com:80',
+  credentials: true // Allow sending cookies through CORS
+}));
 
-// Middleware để kiểm tra JWT token
+// Middleware to check JWT token
 function authenticateJWT(req, res, next) {
   const authHeader = req.headers.authorization;
 
   if (authHeader) {
-      const token = authHeader.split(' ')[1]; // Tách 'Bearer <token>'
+      const token = authHeader.split(' ')[1]; // Split 'Bearer <token>'
 
-      jwt.verify(token, JWT_SECRET, (err) => {
+      jwt.verify(token, SECRET_KEY, (err, decodedToken) => {
           if (err) {
               return res.sendStatus(403); // Forbidden
           }
 
-          // Token hợp lệ, lưu thông tin user vào request
+          // Token is valid, store user info in request
           req.user = {
-            email: decodedToken.email,
-            loginId: decodedToken.loginId,
-            roles: decodedToken.roles
+            app: decodedToken.app,
+            time: decodedToken.time,
+            loginId: decodedToken.loginId
           };
           next();
       });
@@ -48,54 +47,34 @@ function authenticateJWT(req, res, next) {
   }
 }
 
-// ✅ Middleware kiểm tra & giải mã JWT
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Lấy phần sau "Bearer"
-
-  if (token == null) {
-    return res.status(401).json({ message: 'No token provided' });
-  }
-
-  jwt.verify(token, SECRET_KEY, (err, email) => {
-    if (err) {
-      console.log(err);
-      return res.status(403).json({ message: 'Invalid token' });
-    }
-    req.email = email; // ✅ Giải mã xong, gán vào req.user
-    next();
-  });
-}
-
 app.get('/', authenticateJWT, (req, res) => {
   res.json({
-    message: 'Đã xác thực thành công!',
-    email: req.user.email,
-    loginId: req.user.loginId,
-    roles: req.user.roles
+    message: 'Authentication successful!',
+    app: req.user.app,
+    time: req.user.time,
+    loginId: req.user.loginId
   });
 });
 
 app.get('/api/me', authenticateJWT, (req, res) => {
   res.json({
-    loginId: req.user.loginId,
-    email: req.user.email,
-    roles: req.user.roles
+    app: req.user.app,
+    time: req.user.time,
+    loginId: req.user.loginId
   });
 });
 
 // Routes
 app.use('/api/login-history', authenticateJWT, loginHistoryRoutes);
 
-// Kết nối DB và khởi động server
+// Connect to DB and start server
 sequelize.authenticate()
   .then(() => {
-    console.log('Kết nối database thành công.');
+    console.log('Database connection successful.');
     app.listen(3000, () => {
-      console.log('Server chạy ở http://localhost:3000');
+      console.log('Server is running at http://iamwebapp.adnovumlabs.com:3000');
     });
   })
   .catch(err => {
-    console.error('Không kết nối được database:', err);
+    console.error('Unable to connect to the database:', err);
   });
-
