@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 
 const cors = require('cors');
 app.use(cors({ 
-  origin: 'http://iamwebapp.adnovumlabs.com:80',
+  origin: 'http://iamwebapp.adnovumlabs.com',
   credentials: true // Allow sending cookies through CORS
 }));
 
