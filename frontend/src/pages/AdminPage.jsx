@@ -4,10 +4,10 @@ import loginHistoryService from '../services/loginHistoryService';
 function AdminPage() {
   const [loginHistory, setLoginHistory] = useState([])
 
-  // Lấy tất cả lịch sử đăng nhập khi component được load
+  // Fetch all login history when the component is loaded
   useEffect(() => {
     loginHistoryService.getAll().then(data => {
-      // Chuyển đổi dữ liệu thành định dạng ngày/tháng/năm và giờ
+      // Format data into date/month/year and time format
       const formattedData = data.map(entry => ({
         loginId: entry.login_id,
         app: entry.app,

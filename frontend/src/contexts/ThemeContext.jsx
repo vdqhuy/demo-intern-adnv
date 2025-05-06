@@ -8,7 +8,7 @@ export function ThemeProvider({ children }) {
   })
 
   useEffect(() => {
-    // Lấy theme từ localStorage nếu có
+    // Get theme from localStorage if available
     const storedTheme = localStorage.getItem('theme')
     if (storedTheme) {
       setTheme(storedTheme)
@@ -16,7 +16,7 @@ export function ThemeProvider({ children }) {
   }, [])
 
   useEffect(() => {
-    // Cập nhật DOM + lưu localStorage
+    // Update DOM and save to localStorage
     document.body.setAttribute('data-theme', theme)
     localStorage.setItem('theme', theme)
   }, [theme])

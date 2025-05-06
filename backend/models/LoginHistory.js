@@ -15,7 +15,7 @@ const LoginHistory = sequelize.define('LoginHistory', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  last_login: {
+  time: {
     type: DataTypes.DATE,
     allowNull: false,
   },

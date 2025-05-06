@@ -1,6 +1,6 @@
 const LoginHistory = require('../models/LoginHistory');
 
-// Lấy tất cả lịch sử đăng nhập
+// Get all login history
 exports.getAll = async (req, res) => {
   try {
     const data = await LoginHistory.findAll();
@@ -10,7 +10,7 @@ exports.getAll = async (req, res) => {
   }
 };
 
-// Lấy lịch sử đăng nhập theo login_id
+// Get login history by login_id
 exports.getByLoginId = async (req, res) => {
     const { login_id } = req.params;
   

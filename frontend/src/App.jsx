@@ -15,7 +15,7 @@ function App() {
           <Route path="/" element={<UserPage />} />
           <Route path="/minced-meat-app" element={<UserPage />} />
           <Route path="/baker-blade-app" element={<UserPage />} />
-          <Route path="/diet-coke-app" element={<AdminPage />} />
+          {/* <Route path="/diet-coke-app" element={<AdminPage />} /> */}
         </Routes>
 
         <Footer />
