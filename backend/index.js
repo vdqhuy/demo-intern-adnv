@@ -1,11 +1,19 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const https = require('https');
+const fs = require('fs');
 const sequelize = require('./config/database');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = '7Hnl/THVafYYlT8dzHPSiyNNb4KBTR+DGbt9GpIVyd7eE6vszauXc7wTVHqyDVxSywD3FHmffmgNlLA7nNaPjA==';
 
 const loginHistoryRoutes = require('./routes/loginHistoryRoutes');
+
+// Đọc chứng chỉ SSL
+const options = {
+  key: fs.readFileSync('/etc/letsencrypt/live/iamwebapp.adnovumlabs.com/privkey.pem'),   // Đường dẫn đến private key
+  cert: fs.readFileSync('/etc/letsencrypt/live/iamwebapp.adnovumlabs.com/fullchain.pem') // Đường dẫn đến certificate
+};
 
 function decodeAndVerifyJWT(token_base64, secret_key) {
   const decoded = jwt.verify(token_base64, secret_key);
@@ -67,11 +75,11 @@ app.get('/api/me', authenticateJWT, (req, res) => {
 // Routes
 app.use('/api/login-history', authenticateJWT, loginHistoryRoutes);
 
-// Connect to DB and start server
+// Kết nối DB và chạy server
 sequelize.authenticate()
   .then(() => {
     console.log('Database connection successful.');
-    app.listen(3000, () => {
+    https.createServer(options, app).listen(3000, () => {
       console.log('Server is running at https://iamwebapp.adnovumlabs.com:3000');
     });
   })
