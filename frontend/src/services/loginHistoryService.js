@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://iamwebapp.adnovumlabs.com:3000/api/login-history';
+const API_BASE_URL = 'https://iamwebapp.adnovumlabs.com:3000/api/login-history';
 
 const loginHistoryService = {
   // Get all login history

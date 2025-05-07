@@ -9,7 +9,7 @@ function UserPage() {
 
   // Fetch loginId when component loads
   useEffect(() => {
-    axios.get('http://iamwebapp.adnovumlabs.com:3000/api/me', { withCredentials: true })
+    axios.get('https://iamwebapp.adnovumlabs.com:3000/api/me', { withCredentials: true })
       .then(response => {
         setLoginId(response.data.loginId); // ✅ Get loginId from decoded token in backend
       })

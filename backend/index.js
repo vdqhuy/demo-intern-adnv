@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 
 const cors = require('cors');
 app.use(cors({ 
-  origin: 'http://iamwebapp.adnovumlabs.com',
+  origin: 'https://iamwebapp.adnovumlabs.com',
   credentials: true // Allow sending cookies through CORS
 }));
 
@@ -72,7 +72,7 @@ sequelize.authenticate()
   .then(() => {
     console.log('Database connection successful.');
     app.listen(3000, () => {
-      console.log('Server is running at http://iamwebapp.adnovumlabs.com:3000');
+      console.log('Server is running at https://iamwebapp.adnovumlabs.com:3000');
     });
   })
   .catch(err => {
