@@ -11,8 +11,8 @@ const loginHistoryRoutes = require('./routes/loginHistoryRoutes');
 
 // Đọc chứng chỉ SSL
 const options = {
-  key: fs.readFileSync('./certs/privkey.pem'),   // Đường dẫn đến private key
-  cert: fs.readFileSync('./certs/fullchain.pem') // Đường dẫn đến certificate
+  key: fs.readFileSync('./certs/privkey.pem'),   // Path to private key
+  cert: fs.readFileSync('./certs/fullchain.pem') // Path to certificate
 };
 
 function decodeAndVerifyJWT(token_base64, secret_key) {
