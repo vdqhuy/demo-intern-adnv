@@ -34,7 +34,9 @@ const corsOptions = {
   credentials: true,  // Allow cookies and credentials
 };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+
+app.use(cors({ origin: true, credentials: true }));
 
 app.use(bodyParser.json());
 
@@ -119,7 +121,7 @@ app.use('/api/login-history', authenticateJWT, loginHistoryRoutes);
 sequelize.authenticate()
   .then(() => {
     console.log('Database connection successful.');
-    https.createServer(options, app).listen(443, () => {
+    https.createServer(options, app).listen(3000, () => {
       console.log('Server is running at https://iamwebapp.adnovumlabs.com:3000');
     });
   })
