@@ -69,12 +69,16 @@ function authenticateJWT(req, res, next) {
 }
 
 app.get('/', authenticateJWT, (req, res) => {
-  res.json({
-    message: 'Authentication successful!',
-    app: req.user.app,
-    time: req.user.time,
-    loginId: req.user.loginId
-  });
+  const appName = req.user.app;
+
+  if (appName === 'MincedMeat') {
+    res.redirect('https://iamwebapp.adnovumlabs.com/minced-meat-app');
+  } else if (appName === 'BakerBlade') {
+    res.redirect('https://iamwebapp.adnovumlabs.com/baker-blade-app');
+  } else {
+    // Nếu không khớp app nào
+    res.status(400).json({ message: 'Unknown app value in token.' });
+  }
 });
 
 // app.get('/api/me', authenticateJWT, (req, res) => {
