@@ -14,9 +14,6 @@ const options = {
   cert: fs.readFileSync('./certs/fullchain.pem') // Path to certificate
 };
 
-const app = express();
-app.use(bodyParser.json());
-
 const cors = require('cors');
 
 const allowedOrigins = [
@@ -36,6 +33,9 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+const app = express();
+app.use(bodyParser.json());
 
 // Middleware to check JWT token
 function authenticateJWT(req, res, next) {
