@@ -18,9 +18,24 @@ const app = express();
 app.use(bodyParser.json());
 
 const cors = require('cors');
-app.use(cors({ 
-  origin: 'https://iamwebapp.adnovumlabs.com'
-}));
+
+const allowedOrigins = [
+  'https://iamwebapp.adnovumlabs.com',
+  'https://iamintern.adnovumlabs.com'
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);  // Allow the request
+    } else {
+      callback(new Error('Not allowed by CORS'), false);  // Reject the request
+    }
+  },
+  credentials: true,  // Allow cookies and credentials
+};
+
+app.use(cors(corsOptions));
 
 // Middleware to check JWT token
 function authenticateJWT(req, res, next) {
