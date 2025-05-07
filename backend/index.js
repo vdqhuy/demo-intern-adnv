@@ -3,36 +3,31 @@ const bodyParser = require('body-parser');
 const https = require('https');
 const fs = require('fs');
 const sequelize = require('./config/database');
-const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = '7Hnl/THVafYYlT8dzHPSiyNNb4KBTR+DGbt9GpIVyd7eE6vszauXc7wTVHqyDVxSywD3FHmffmgNlLA7nNaPjA==';
 
 const loginHistoryRoutes = require('./routes/loginHistoryRoutes');
 
-// Đọc chứng chỉ SSL
+// read SSL certificate and key
 const options = {
   key: fs.readFileSync('./certs/privkey.pem'),   // Path to private key
   cert: fs.readFileSync('./certs/fullchain.pem') // Path to certificate
 };
-
-function decodeAndVerifyJWT(token_base64, secret_key) {
-  const decoded = jwt.verify(token_base64, secret_key);
-  console.log(decoded);
-  return decoded;
-}
 
 const app = express();
 app.use(bodyParser.json());
 
 const cors = require('cors');
 app.use(cors({ 
-  origin: 'https://iamwebapp.adnovumlabs.com',
-  credentials: true // Allow sending cookies through CORS
+  origin: 'https://iamwebapp.adnovumlabs.com'
 }));
 
 // Middleware to check JWT token
 function authenticateJWT(req, res, next) {
-  const authHeader = req.headers.authorization;
+  console.log(req);
+  console.log(req.headers);
+
+  const authHeader = req.headers.authorization1;
 
   if (authHeader) {
       const token = authHeader.split(' ')[1]; // Split 'Bearer <token>'
@@ -64,13 +59,42 @@ app.get('/', authenticateJWT, (req, res) => {
   });
 });
 
-app.get('/api/me', authenticateJWT, (req, res) => {
-  res.json({
-    app: req.user.app,
-    time: req.user.time,
-    loginId: req.user.loginId
+// app.get('/api/me', authenticateJWT, (req, res) => {
+//   res.json({
+//     app: req.user.app,
+//     time: req.user.time,
+//     loginId: req.user.loginId
+//   });
+// });
+
+app.get('/api/me', (req, res) => {
+  console.log(req);
+  console.log(req.headers);
+
+  // Get token from header
+  const authHeader = req.headers.authorization1; // Make sure 'authorization1' is the correct header name in the request
+  
+  if (!authHeader) {
+    return res.sendStatus(401); // Unauthorized if no token is provided
+  }
+
+  const token = authHeader.split(' ')[1]; // Split 'Bearer <token>'
+
+  // Verify JWT token
+  jwt.verify(token, SECRET_KEY, (err, decodedToken) => {
+    if (err) {
+      return res.sendStatus(403); // Forbidden if the token is invalid
+    }
+
+    // If the token is valid, return the user information
+    res.json({
+      app: decodedToken.app,
+      time: decodedToken.time,
+      loginId: decodedToken.loginId
+    });
   });
 });
+
 
 // Routes
 app.use('/api/login-history', authenticateJWT, loginHistoryRoutes);
