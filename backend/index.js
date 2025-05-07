@@ -8,6 +8,8 @@ const SECRET_KEY = '7Hnl/THVafYYlT8dzHPSiyNNb4KBTR+DGbt9GpIVyd7eE6vszauXc7wTVHqy
 
 const loginHistoryRoutes = require('./routes/loginHistoryRoutes');
 
+const app = express();
+
 // read SSL certificate and key
 const options = {
   key: fs.readFileSync('./certs/privkey.pem'),   // Path to private key
@@ -34,7 +36,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-const app = express();
 app.use(bodyParser.json());
 
 // Middleware to check JWT token
@@ -114,11 +115,11 @@ app.get('/api/me', (req, res) => {
 // Routes
 app.use('/api/login-history', authenticateJWT, loginHistoryRoutes);
 
-// Kết nối DB và chạy server
+// Connect to the database and start the server
 sequelize.authenticate()
   .then(() => {
     console.log('Database connection successful.');
-    https.createServer(options, app).listen(3000, () => {
+    https.createServer(options, app).listen(443, () => {
       console.log('Server is running at https://iamwebapp.adnovumlabs.com:3000');
     });
   })
