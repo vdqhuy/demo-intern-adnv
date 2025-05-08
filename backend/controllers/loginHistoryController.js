@@ -22,5 +22,18 @@ exports.getByLoginId = async (req, res) => {
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
-  };
+};
   
+// Add a login history record
+exports.addLoginHistory = async (login_id, app, time) => {
+  try {
+    await LoginHistory.create({
+      login_id,
+      app,
+      time
+    });
+    console.log('Login history added successfully');
+  } catch (err) {
+    console.error('Error adding login history:', err.message);
+  }
+};

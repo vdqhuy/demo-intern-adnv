@@ -68,54 +68,71 @@ function authenticateJWT(req, res, next) {
   }
 }
 
-app.get('/', authenticateJWT, (req, res) => {
-  const appName = req.user.app;
+app.get('/', authenticateJWT, async (req, res) => {
+  const { loginId, app, time } = req.user;
 
-  if (appName === 'MincedMeat') {
-    res.redirect('https://iamintern.adnovumlabs.com/minced-meat/');
-  } else if (appName === 'BakerBlade') {
-    res.redirect('https://iamintern.adnovumlabs.com/baker-blade/');
-  } else {
-    // Nếu không khớp app nào
-    res.status(400).json({ message: 'Unknown app value in token.' });
+  // Send the login history data to be added via the routes
+  const loginHistoryData = {
+    login_id: loginId,
+    app: app,
+    time: time
+  };
+
+  // Add login history record
+  try {
+    // Call the router's post method for /add-login-history directly
+    const response = await loginHistoryRoutes.handle({
+      method: 'POST',
+      url: '/add-login-history',
+      body: loginHistoryData,
+      headers: req.headers,
+    });
+
+    if (response.status === 201) {
+      res.status(201).json({ message: 'Login history added successfully' });
+    } else {
+      res.status(500).json({ error: response.data.error });
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Error adding login history: ' + err.message });
   }
 });
 
-// app.get('/api/me', authenticateJWT, (req, res) => {
-//   res.json({
-//     app: req.user.app,
-//     time: req.user.time,
-//     loginId: req.user.loginId
-//   });
-// });
-
-app.get('/api/me', (req, res) => {
-  console.log(req);
-  console.log(req.headers);
-
-  // Get token from header
-  const authHeader = req.headers.authorization1; // Make sure 'authorization1' is the correct header name in the request
-  
-  if (!authHeader) {
-    return res.sendStatus(401); // Unauthorized if no token is provided
-  }
-
-  const token = authHeader.split(' ')[1]; // Split 'Bearer <token>'
-
-  // Verify JWT token
-  jwt.verify(token, SECRET_KEY, (err, decodedToken) => {
-    if (err) {
-      return res.sendStatus(403); // Forbidden if the token is invalid
-    }
-
-    // If the token is valid, return the user information
-    res.json({
-      app: decodedToken.app,
-      time: decodedToken.time,
-      loginId: decodedToken.loginId
-    });
+app.get('/api/me', authenticateJWT, (req, res) => {
+  res.json({
+    app: req.user.app,
+    time: req.user.time,
+    loginId: req.user.loginId
   });
 });
+
+// app.get('/api/me', (req, res) => {
+//   console.log(req);
+//   console.log(req.headers);
+
+//   // Get token from header
+//   const authHeader = req.headers.authorization1; // Make sure 'authorization1' is the correct header name in the request
+  
+//   if (!authHeader) {
+//     return res.sendStatus(401); // Unauthorized if no token is provided
+//   }
+
+//   const token = authHeader.split(' ')[1]; // Split 'Bearer <token>'
+
+//   // Verify JWT token
+//   jwt.verify(token, SECRET_KEY, (err, decodedToken) => {
+//     if (err) {
+//       return res.sendStatus(403); // Forbidden if the token is invalid
+//     }
+
+//     // If the token is valid, return the user information
+//     res.json({
+//       app: decodedToken.app,
+//       time: decodedToken.time,
+//       loginId: decodedToken.loginId
+//     });
+//   });
+// });
 
 
 // Routes
