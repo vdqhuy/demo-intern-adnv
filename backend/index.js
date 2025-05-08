@@ -72,9 +72,9 @@ app.get('/', authenticateJWT, (req, res) => {
   const appName = req.user.app;
 
   if (appName === 'MincedMeat') {
-    res.redirect('https://iamwebapp.adnovumlabs.com/minced-meat-app');
+    res.redirect('https://iamintern.adnovumlabs.com/minced-meat/');
   } else if (appName === 'BakerBlade') {
-    res.redirect('https://iamwebapp.adnovumlabs.com/baker-blade-app');
+    res.redirect('https://iamintern.adnovumlabs.com/baker-blade/');
   } else {
     // Nếu không khớp app nào
     res.status(400).json({ message: 'Unknown app value in token.' });

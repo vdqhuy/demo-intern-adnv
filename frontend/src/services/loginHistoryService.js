@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://iamwebapp.adnovumlabs.com/api/login-history';
+const API_BASE_URL = 'https://iamintern.adnovumlabs.com/minced-meat-backend/api/login-history';
 
 const loginHistoryService = {
   // Get all login history
