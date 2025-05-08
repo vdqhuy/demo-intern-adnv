@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const SECRET_KEY = '7Hnl/THVafYYlT8dzHPSiyNNb4KBTR+DGbt9GpIVyd7eE6vszauXc7wTVHqyDVxSywD3FHmffmgNlLA7nNaPjA==';
 
 const loginHistoryRoutes = require('./routes/loginHistoryRoutes');
+const controller = require('./controllers/loginHistoryController'); // Import the controller
 
 const app = express();
 
@@ -74,16 +75,25 @@ function authenticateJWT(req, res, next) {
 
 // });
 
-app.get('/api/me', authenticateJWT, async (req, res) => {
-  const sessionCookie = req.cookies['Session_Minced-Baker_SSO_realm'];
-  console.log('Session_Minced-Baker_SSO_realm:', sessionCookie);
-
+app.get('/api/me', async (req, res) => {
   // Call addLoginHistory after extracting session information
-  const { loginId, app, time } = req.user;
+  // Tạo một đối tượng Date mới cho thời gian UTC
+  const utcDate = new Date('2025-05-07T10:30:00Z');
+
+  // Chuyển đổi UTC sang thời gian địa phương (localDateTime)
+  const localDate = utcDate.toLocaleString('en-US', { timeZoneName: 'short' });
+
+  req.user = {
+    login_id: 'user456',
+    app: 'minced-meat-app',
+    time: localDate
+  };
+  
+  const { login_id, app, time } = req.user;
 
   try {
     // Add login history
-    const loginHistoryResponse = await controller.addLoginHistory(loginId, app, time, sessionCookie);
+    const loginHistoryResponse = await controller.addLoginHistory(req, res);
 
     // Log the response for debugging
     console.log(loginHistoryResponse);
@@ -91,8 +101,7 @@ app.get('/api/me', authenticateJWT, async (req, res) => {
     res.json({
       app: req.user.app,
       time: req.user.time,
-      loginId: req.user.loginId,
-      session: sessionCookie, // Include the session cookie in the response
+      loginId: req.user.login_id,
       loginHistoryMessage: loginHistoryResponse.message // Include login history status
     });
   } catch (err) {
@@ -130,7 +139,7 @@ app.get('/api/me', authenticateJWT, async (req, res) => {
 
 
 // Routes
-app.use('/api/login-history', authenticateJWT, loginHistoryRoutes);
+app.use('/api/login-history', loginHistoryRoutes);
 
 // Connect to the database and start the server
 sequelize.authenticate()

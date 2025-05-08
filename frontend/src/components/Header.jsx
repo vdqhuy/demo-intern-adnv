@@ -13,6 +13,11 @@ function Header() {
 
   const headerTitle = 'Minced Meat App'
 
+  // Hàm để xử lý đăng xuất
+  const handleLogout = () => {
+    window.location.href = 'http://localhost:5173/minced-meat/?logout';
+  }
+
   return (
     <header className="header">
       <div className="logo-container">
@@ -25,7 +30,7 @@ function Header() {
       </div>
 
       <div className="header-actions">
-        <button className="logout-button">Log out</button>
+        <button className="logout-button" onClick={handleLogout}>Log out</button>
         <FontAwesomeIcon
           icon={theme === 'light' ? faMoon : faSun}
           className="theme-icon"

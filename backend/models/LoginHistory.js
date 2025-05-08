@@ -19,17 +19,13 @@ const LoginHistory = sequelize.define('LoginHistory', {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  session: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
 }, {
   tableName: 'login_history',
   timestamps: false, // because we don't need createdAt and updatedAt fields
   indexes: [
     {
       unique: true,
-      fields: ['app', 'session'],
+      fields: ['app', 'time', 'login_id'],
     },
   ],
 });

@@ -3,13 +3,16 @@ import loginHistoryService from '.././services/loginHistoryService';
 import axios from 'axios';
 
 function UserPage() {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   // State for login history data
   const [loginHistory, setLoginHistory] = useState([]);
   const [loginId, setLoginId] = useState('');
 
   // Fetch loginId when component loads
+  // https://iamintern.adnovumlabs.com/minced-meat-backend/api/me
   useEffect(() => {
-    axios.get('https://iamintern.adnovumlabs.com/minced-meat-backend/api/me', { withCredentials: true })
+    axios.get(`${backendUrl}/me`, { withCredentials: true })
       .then(response => {
         setLoginId(response.data.loginId); // ✅ Get loginId from decoded token in backend
       })
