@@ -3,7 +3,6 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import './App.css'
 import UserPage from './pages/UserPage'
-import AdminPage from './pages/AdminPage'
 
 function App() {
   return (
@@ -12,10 +11,7 @@ function App() {
         <Header />
 
         <Routes>
-          <Route path="/" element={<UserPage />} />
-          <Route path="/minced-meat-app" element={<UserPage />} />
-          <Route path="/baker-blade-app" element={<UserPage />} />
-          {/* <Route path="/diet-coke-app" element={<AdminPage />} /> */}
+          <Route path="*" element={<UserPage />} />
         </Routes>
 
         <Footer />

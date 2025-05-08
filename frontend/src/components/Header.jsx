@@ -1,4 +1,3 @@
-import { useLocation } from 'react-router-dom'
 import { useContext } from 'react'
 import { ThemeContext } from '../contexts/ThemeContext'
 import logo from '../assets/logo.png'
@@ -10,19 +9,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
 
 function Header() {
-  const location = useLocation()
   const { theme, toggleTheme } = useContext(ThemeContext)
-  const path = location.pathname
 
-  let headerTitle = 'Minced Corp'
-
-  if (path.startsWith('/minced-meat-app')) {
-    headerTitle = 'Minced Meat App'
-  } else if (path.startsWith('/baker-blade-app')) {
-    headerTitle = 'Baker Blade App'
-  } else if (path.startsWith('/diet-coke-app')) {
-    headerTitle = 'Diet Coke App'
-  }
+  const headerTitle = 'Minced Meat App'
 
   return (
     <header className="header">
