@@ -4,6 +4,7 @@ const https = require('https');
 const fs = require('fs');
 const sequelize = require('./config/database');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 const SECRET_KEY = '7Hnl/THVafYYlT8dzHPSiyNNb4KBTR+DGbt9GpIVyd7eE6vszauXc7wTVHqyDVxSywD3FHmffmgNlLA7nNaPjA==';
 
 const loginHistoryRoutes = require('./routes/loginHistoryRoutes');
@@ -39,6 +40,7 @@ const corsOptions = {
 app.use(cors({ origin: true, credentials: true }));
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // Middleware to check JWT token
 function authenticateJWT(req, res, next) {
@@ -99,6 +101,9 @@ app.get('/', authenticateJWT, async (req, res) => {
 });
 
 app.get('/api/me', authenticateJWT, (req, res) => {
+  const sessionCookie = req.cookies['Session_Minced-Baker_SSO_realm'];
+  console.log('Session_Minced-Baker_SSO_realm:', sessionCookie);
+
   res.json({
     app: req.user.app,
     time: req.user.time,
