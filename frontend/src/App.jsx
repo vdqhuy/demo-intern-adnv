@@ -6,7 +6,7 @@ import UserPage from './pages/UserPage'
 
 function App() {
   return (
-    <Router>
+    <Router basename="/minced-meat">
       <div className="app">
         <Header />
 
