@@ -1,8 +1,25 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import loginHistoryService from '../services/loginHistoryService';
+import axios from 'axios';
 
 function AdminPage() {
-  const [loginHistory, setLoginHistory] = useState([])
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+  const navigate = useNavigate();
+
+  const [loginHistory, setLoginHistory] = useState([]);
+  const [loginId, setLoginId] = useState('');
+
+  useEffect(() => {
+    axios.get(`${backendUrl}/me`, { withCredentials: true })
+      .then(response => {
+        setLoginId(response.data.loginId); // ✅ Get loginId from decoded token in backend
+      })
+      .catch(error => {
+        console.error('Failed to fetch user info:', error);
+      });
+  }, []);
 
   // Fetch all login history when the component is loaded
   useEffect(() => {
@@ -11,8 +28,8 @@ function AdminPage() {
       const formattedData = data.map(entry => ({
         loginId: entry.login_id,
         app: entry.app,
-        date: new Date(entry.last_login).toLocaleDateString(),
-        time: new Date(entry.last_login).toLocaleTimeString()
+        date: new Date(entry.time).toLocaleDateString(),
+        time: new Date(entry.time).toLocaleTimeString()
       }));
       setLoginHistory(formattedData);
     });
@@ -43,6 +60,15 @@ function AdminPage() {
           ))}
         </tbody>
       </table>
+
+      <div>
+        <button className='logout-button' onClick={() => navigate('/metrics')} style={{ marginRight: '100px' }}>
+          View Metrics
+        </button>
+        <button className='logout-button' onClick={() => navigate('/other-charts')}>
+          View Other Charts
+        </button>
+      </div>
     </main>
   )
 }

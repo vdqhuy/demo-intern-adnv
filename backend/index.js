@@ -111,35 +111,6 @@ app.get('/api/me', async (req, res) => {
   }
 });
 
-// app.get('/api/me', (req, res) => {
-//   console.log(req);
-//   console.log(req.headers);
-
-//   // Get token from header
-//   const authHeader = req.headers.authorization1; // Make sure 'authorization1' is the correct header name in the request
-  
-//   if (!authHeader) {
-//     return res.sendStatus(401); // Unauthorized if no token is provided
-//   }
-
-//   const token = authHeader.split(' ')[1]; // Split 'Bearer <token>'
-
-//   // Verify JWT token
-//   jwt.verify(token, SECRET_KEY, (err, decodedToken) => {
-//     if (err) {
-//       return res.sendStatus(403); // Forbidden if the token is invalid
-//     }
-
-//     // If the token is valid, return the user information
-//     res.json({
-//       app: decodedToken.app,
-//       time: decodedToken.time,
-//       loginId: decodedToken.loginId
-//     });
-//   });
-// });
-
-
 // Routes
 app.use('/api/login-history', loginHistoryRoutes);
 
