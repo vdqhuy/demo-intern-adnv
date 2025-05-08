@@ -62,10 +62,10 @@ function AdminPage() {
       </table>
 
       <div>
-        <button className='logout-button' onClick={() => navigate('/metrics')} style={{ marginRight: '100px' }}>
+        <button className='gen-button' onClick={() => navigate('/metrics')} style={{ marginRight: '100px' }}>
           View Metrics
         </button>
-        <button className='logout-button' onClick={() => navigate('/other-charts')}>
+        <button className='gen-button' onClick={() => navigate('/other-charts')}>
           View Other Charts
         </button>
       </div>

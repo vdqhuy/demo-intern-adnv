@@ -31,7 +31,7 @@ function Header() {
       </div>
 
       <div className="header-actions">
-        <button className="logout-button" onClick={handleLogout}>Log out</button>
+        <button className="gen-button" onClick={handleLogout}>Log out</button>
         <FontAwesomeIcon
           icon={theme === 'light' ? faMoon : faSun}
           className="theme-icon"

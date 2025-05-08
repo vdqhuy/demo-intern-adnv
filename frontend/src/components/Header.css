@@ -30,7 +30,7 @@
     padding-left: 10px;
 }
 
-.logout-button {
+.gen-button {
   background-color: var(--btn-bg);
   color: var(--text-color-reverse);
   border: none;
@@ -46,7 +46,7 @@
     background-color: #6cbac0;
 } */
 
-.logout-button:hover {
+.gen-button:hover {
   background-color: var(--btn-bg-hover);
   color: var(--text-color-reverse);
 }
