@@ -11,11 +11,12 @@ import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons'
 function Header() {
   const { theme, toggleTheme } = useContext(ThemeContext)
 
-  const headerTitle = 'Minced Meat App'
+  const headerTitle = import.meta.env.VITE_HEADER_TITLE || 'IAM Intern Corp'
+  const basePath = import.meta.env.VITE_BASE_PATH;
 
   // Hàm để xử lý đăng xuất
   const handleLogout = () => {
-    window.location.href = 'http://localhost:5173/minced-meat/?logout';
+    window.location.href = `${window.location.origin}${basePath}/?logout`;
   }
 
   return (

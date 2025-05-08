@@ -22,7 +22,8 @@ const cors = require('cors');
 
 const allowedOrigins = [
   'https://iamwebapp.adnovumlabs.com',
-  'https://iamintern.adnovumlabs.com'
+  'https://iamintern.adnovumlabs.com',
+  'http://localhost:5173'
 ];
 
 const corsOptions = {
@@ -36,9 +37,10 @@ const corsOptions = {
   credentials: true,  // Allow cookies and credentials
 };
 
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
-app.use(cors({ origin: true, credentials: true }));
+// Allow all origins (for development purposes only, not recommended for production)
+// app.use(cors({ origin: true, credentials: true }));
 
 app.use(bodyParser.json());
 app.use(cookieParser());
