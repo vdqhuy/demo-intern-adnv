@@ -70,45 +70,34 @@ function authenticateJWT(req, res, next) {
   }
 }
 
-app.get('/', authenticateJWT, async (req, res) => {
-  const { loginId, app, time } = req.user;
+// app.get('/', authenticateJWT, async (req, res) => {
 
-  // Send the login history data to be added via the routes
-  const loginHistoryData = {
-    login_id: loginId,
-    app: app,
-    time: time
-  };
+// });
 
-  // Add login history record
-  try {
-    // Call the router's post method for /add-login-history directly
-    const response = await loginHistoryRoutes.handle({
-      method: 'POST',
-      url: '/add-login-history',
-      body: loginHistoryData,
-      headers: req.headers,
-    });
-
-    if (response.status === 201) {
-      res.status(201).json({ message: 'Login history added successfully' });
-    } else {
-      res.status(500).json({ error: response.data.error });
-    }
-  } catch (err) {
-    res.status(500).json({ error: 'Error adding login history: ' + err.message });
-  }
-});
-
-app.get('/api/me', authenticateJWT, (req, res) => {
+app.get('/api/me', authenticateJWT, async (req, res) => {
   const sessionCookie = req.cookies['Session_Minced-Baker_SSO_realm'];
   console.log('Session_Minced-Baker_SSO_realm:', sessionCookie);
 
-  res.json({
-    app: req.user.app,
-    time: req.user.time,
-    loginId: req.user.loginId
-  });
+  // Call addLoginHistory after extracting session information
+  const { loginId, app, time } = req.user;
+
+  try {
+    // Add login history
+    const loginHistoryResponse = await controller.addLoginHistory(loginId, app, time, sessionCookie);
+
+    // Log the response for debugging
+    console.log(loginHistoryResponse);
+
+    res.json({
+      app: req.user.app,
+      time: req.user.time,
+      loginId: req.user.loginId,
+      session: sessionCookie, // Include the session cookie in the response
+      loginHistoryMessage: loginHistoryResponse.message // Include login history status
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // app.get('/api/me', (req, res) => {
