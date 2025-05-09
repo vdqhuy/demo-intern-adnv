@@ -62,11 +62,11 @@ function AdminPage() {
       </table>
 
       <div>
-        <button className='gen-button' onClick={() => navigate('/metrics')} style={{ marginRight: '100px' }}>
-          View Metrics
-        </button>
-        <button className='gen-button' onClick={() => navigate('/other-charts')}>
-          View Other Charts
+        <button 
+          className='gen-button'
+          onClick={() => window.open('http://iamgrafana.adnovumlabs.com/public-dashboards/284d423dd7a44dc180ef021ea8e5e605?from=now-1h&to=now&timezone=browser&refresh=30s', '_blank')}
+          >
+          View Dashboard
         </button>
       </div>
     </main>

@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    image: 869388145954.dkr.ecr.ap-southeast-1.amazonaws.com/backend/be25:latest
+    container_name: backend
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  frontend:
+    image: 869388145954.dkr.ecr.ap-southeast-1.amazonaws.com/frontend/fe20:latest
+    container_name: frontend
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridg
