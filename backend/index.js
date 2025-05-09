@@ -37,10 +37,10 @@ const corsOptions = {
   credentials: true,  // Allow cookies and credentials
 };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 // Allow all origins (for development purposes only, not recommended for production)
-// app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -64,7 +64,7 @@ function authenticateJWT(req, res, next) {
           req.user = {
             app: decodedToken.app,
             time: decodedToken.time,
-            loginId: decodedToken.loginId
+            login_id: decodedToken.loginId
           };
           next();
       });
@@ -91,7 +91,8 @@ app.get('/api/me', authenticateJWT, async (req, res) => {
   //   time: localDate
   // };
   
-  // const { loginId, app, time } = req.user;
+  // // const { loginId, app, time } = req.user;
+  // console.log(req.user);
 
   try {
     // Add login history
