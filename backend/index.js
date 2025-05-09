@@ -77,19 +77,19 @@ function authenticateJWT(req, res, next) {
 
 // });
 
-app.get('/api/me', authenticateJWT, async (req, res) => {
+app.get('/api/me', async (req, res) => {
   // Call addLoginHistory after extracting session information
   // Tạo một đối tượng Date mới cho thời gian UTC
-  // const utcDate = new Date('2025-05-07T10:30:00Z');
+  const utcDate = new Date('2025-05-09T10:30:00Z');
 
-  // // Chuyển đổi UTC sang thời gian địa phương (localDateTime)
-  // const localDate = utcDate.toLocaleString('en-US', { timeZoneName: 'short' });
+  // Chuyển đổi UTC sang thời gian địa phương (localDateTime)
+  const localDate = utcDate.toLocaleString('en-US', { timeZoneName: 'short' });
 
-  // req.user = {
-  //   login_id: 'user456',
-  //   app: 'minced-meat-app',
-  //   time: localDate
-  // };
+  req.user = {
+    login_id: 'user456',
+    app: 'minced-meat-app',
+    time: localDate
+  };
   
   // // const { loginId, app, time } = req.user;
   // console.log(req.user);
@@ -113,7 +113,7 @@ app.get('/api/me', authenticateJWT, async (req, res) => {
 });
 
 // Routes
-app.use('/api/login-history', authenticateJWT, loginHistoryRoutes);
+app.use('/api/login-history', loginHistoryRoutes);
 
 // Connect to the database and start the server
 sequelize.authenticate()
