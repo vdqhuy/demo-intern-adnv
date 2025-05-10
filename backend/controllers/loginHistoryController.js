@@ -64,7 +64,7 @@ exports.addLoginHistory = async (req, res) => {
 
 // Get login history for the current day, optionally filtered by login_id
 exports.getTodayHistory = async (req, res) => {
-  const { login_id } = req.query;
+  const { login_id } = req.params;
 
   try {
     const now = new Date();
