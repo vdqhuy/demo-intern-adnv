@@ -7,6 +7,6 @@ router.get('/:login_id', controller.getByLoginId);
 
 router.post('/add-login-history', controller.addLoginHistory);
   
-router.get('/today/:login_id?', controller.getTodayHistory); // ? = optional param
+router.get('/today/:login_id', controller.getTodayHistory);
 
 module.exports = router;
