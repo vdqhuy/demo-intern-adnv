@@ -38,7 +38,7 @@ function AdminPage() {
   return (
     <main className="main">
       <h1>Admin Dashboard</h1>
-      <h4>Welcome {loginId}</h4>
+      <h2>Welcome {loginId}</h2>
       <p>Recent login history across all users:</p>
 
       <table>
