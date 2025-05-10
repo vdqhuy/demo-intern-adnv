@@ -6,12 +6,12 @@ COPY . .
 RUN npm run build
 
 FROM nginx:stable-alpine
-COPY --from=builder /app/dist /usr/share/nginx/html/baker-blade
+COPY --from=builder /app/dist /usr/share/nginx/html/diet-coke
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
 
 # Health check every 10 minutes (600s)
 HEALTHCHECK --interval=600s --timeout=5s --retries=3 \
-  CMD wget --spider -q http://localhost/baker-blade/ || exit 1
+  CMD wget --spider -q http://localhost/diet-coke/ || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]
