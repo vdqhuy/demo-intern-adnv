@@ -8,7 +8,14 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
-    logging: process.env.DB_LOGGING === 'true'
+    logging: process.env.DB_LOGGING === 'true',
+    port: process.env.DB_PORT,
+    dialectOptions: {
+      ssl: {
+        require: process.env.DB_SSL === 'true', // Use SSL if DB_SSL is set to true
+        rejectUnauthorized: false,
+      }
+    }
   }
 );
 
