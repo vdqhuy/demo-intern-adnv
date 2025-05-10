@@ -23,7 +23,7 @@ function UserPage() {
 
   useEffect(() => {
     if (loginId) {
-      loginHistoryService.getByLoginId(loginId).then(data => {
+      loginHistoryService.getTodayHistory(loginId).then(data => {
         // Format data into date/month/year and time format
         const formattedData = data.map(entry => ({
           app: entry.app,

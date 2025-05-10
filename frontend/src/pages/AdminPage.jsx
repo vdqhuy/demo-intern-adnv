@@ -23,7 +23,7 @@ function AdminPage() {
 
   // Fetch all login history when the component is loaded
   useEffect(() => {
-    loginHistoryService.getAll().then(data => {
+    loginHistoryService.getTodayHistory().then(data => {
       // Format data into date/month/year and time format
       const formattedData = data.map(entry => ({
         loginId: entry.login_id,

@@ -16,6 +16,15 @@ const loginHistoryService = {
     const response = await axios.get(`${backendUrl}/login-history/${loginId}`);
     return response.data;
   },
+
+  // ✅ Get today's login history (with optional loginId)
+  getTodayHistory: async (loginId = '') => {
+    const url = loginId
+      ? `${backendUrl}/login-history/today/${loginId}`
+      : `${backendUrl}/login-history/today`;
+    const response = await axios.get(url);
+    return response.data;
+  },
 };
 
 export default loginHistoryService;
