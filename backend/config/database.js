@@ -1,17 +1,19 @@
-// db.js
 const { Sequelize } = require('sequelize');
+require('dotenv').config(); // Load .env file
 
-// const sequelize = new Sequelize('tiramisu', 'root', '123456Huy!', {
-//   host: '10.0.9.150',
-//   dialect: 'mariadb',
-//   logging: true
-// });
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
+    logging: process.env.DB_LOGGING === 'true'
+  }
+);
 
-const sequelize = new Sequelize('tiramisu', 'root', '123456Huy!', {
-  host: 'localhost',
-  dialect: 'mysql',
-  logging: true
-});
+module.exports = sequelize;
+
 
 // CREATE TABLE `login_history` (
 //   `id` BIGINT NOT NULL AUTO_INCREMENT,
