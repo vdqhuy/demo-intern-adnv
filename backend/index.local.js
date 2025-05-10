@@ -127,27 +127,6 @@ sequelize.authenticate()
     https.createServer(options, app).listen(3000, () => {
       console.log('Server is running at https://iamwebapp.adnovumlabs.com:3000');
     });
-
-    // Self-ping to /health every 5 minutes
-    setInterval(() => {
-      const pingOptions = {
-        hostname: process.env.HOST_NAME,
-        port: 3000,
-        path: '/health',
-        method: 'GET',
-        rejectUnauthorized: false
-      };
-
-      const req = https.request(pingOptions, (res) => {
-        console.log(`[HealthCheck] ${new Date().toISOString()} - Status: ${res.statusCode}`);
-      });
-
-      req.on('error', (e) => {
-        console.error(`[HealthCheck] Error: ${e.message}`);
-      });
-
-      req.end();
-    }, 5 * 60 * 1000);
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err);
