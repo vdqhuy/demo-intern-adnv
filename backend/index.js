@@ -100,8 +100,8 @@ app.get('/api/me', authenticateJWT, async (req, res) => {
 // Routes
 app.use('/api/login-history', authenticateJWT, loginHistoryRoutes);
 
-app.get("/grafana/dashboard", async (req, res) => {
-  const grafanaUrl = "http://iamintern.adnovumlabs.com/d/tmsOtSxZk/amazon-ec2?from=now-1h&to=now"; // dashboard URL
+app.get("/", async (req, res) => {
+  const grafanaUrl = "http://iamgrafana.adnovumlabs.com/d/tmsOtSxZk/amazon-ec2?from=now-1h&to=now"; // dashboard URL
 
   const response = await fetch(grafanaUrl, {
     headers: {

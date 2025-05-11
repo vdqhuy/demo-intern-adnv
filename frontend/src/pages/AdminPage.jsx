@@ -86,6 +86,7 @@ function AdminPage() {
           View Dashboard
         </button>
       </div>
+      <iframe src="http://iamgrafana.adnovumlabs.com/d/tmsOtSxZk/amazon-ec2?from=now-1h&to=now" width="100%" height="500" frameborder="0"></iframe>
     </main>
   )
 }
