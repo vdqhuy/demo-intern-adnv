@@ -73,7 +73,6 @@ function authenticateJWT(req, res, next) {
   }
 }
 
-// Routes
 // app.get('/', authenticateJWT, async (req, res) => {
 
 // });
@@ -98,17 +97,8 @@ app.get('/api/me', authenticateJWT, async (req, res) => {
   }
 });
 
+// Routes
 app.use('/api/login-history', authenticateJWT, loginHistoryRoutes);
-
-app.get('/api/grafana-dashboard', authenticateJWT, async (req, res) => {
-  try {
-    const response = await axios.get('http://iamgrafana.adnovumlabs.com/public-dashboards/284d423dd7a44dc180ef021ea8e5e605?from=now-1h&to=now&timezone=browser&refresh=30s');
-    res.json(response.data);
-  } catch (error) {
-    console.error('Error fetching secure data:', error);
-    res.status(500).json({ error: 'Failed to fetch secure data' });
-  }
-});
 
 // Health check route
 app.get('/health', (req, res) => {
