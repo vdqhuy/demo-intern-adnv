@@ -57,7 +57,7 @@ function AdminPage() {
       <h2>Welcome {loginId}</h2>
       <p>Recent login history across all users:</p>
 
-      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+      <div style={{ maxHeight: '400px', overflowY: 'auto', marginBottom: '20px' }}>
         <table>
           <thead>
             <tr>

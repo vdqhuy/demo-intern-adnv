@@ -40,24 +40,26 @@ function UserPage() {
       <h1>Welcome {loginId}</h1>
       <p>Your recent login history across this domain:</p>
 
-      <table>
-        <thead>
-          <tr>
-            <th>App</th>
-            <th>Date</th>
-            <th>Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loginHistory.map((entry, index) => (
-            <tr key={index}>
-              <td>{entry.app}</td>
-              <td>{entry.date}</td>
-              <td>{entry.time}</td>
+      <div style={{ maxHeight: '400px', overflowY: 'auto', marginBottom: '20px' }}>
+        <table>
+          <thead>
+            <tr>
+              <th>App</th>
+              <th>Date</th>
+              <th>Time</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {loginHistory.map((entry, index) => (
+              <tr key={index}>
+                <td>{entry.app}</td>
+                <td>{entry.date}</td>
+                <td>{entry.time}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </main>
   );
 }
