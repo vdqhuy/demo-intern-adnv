@@ -80,6 +80,7 @@ function AdminPage() {
 
       <div>
         <button 
+          style={{ marginRight: '40px' }}
           className='gen-button'
           onClick={() => window.open('https://iamintern.adnovumlabs.com/public-dashboards/284d423dd7a44dc180ef021ea8e5e605?from=now-1h&to=now&timezone=browser&refresh=30s', '_blank')}
           >
