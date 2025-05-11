@@ -11,10 +11,26 @@ function AdminPage() {
   const [loginHistory, setLoginHistory] = useState([]);
   const [loginId, setLoginId] = useState('');
 
+  const fetchLoginHistory = async () => {
+    try {
+      const data = await loginHistoryService.getTodayHistory();
+      const formattedData = data.map(entry => ({
+        loginId: entry.login_id,
+        app: entry.app,
+        date: new Date(entry.time).toLocaleDateString(),
+        time: new Date(entry.time).toLocaleTimeString()
+      }));
+      setLoginHistory(formattedData);
+    } catch (error) {
+      console.error('Failed to fetch login history:', error);
+    }
+  };
+
   useEffect(() => {
     axios.get(`${backendUrl}/me`, { withCredentials: true })
       .then(response => {
         setLoginId(response.data.loginId); // ✅ Get loginId from decoded token in backend
+        fetchLoginHistory();
       })
       .catch(error => {
         console.error('Failed to fetch user info:', error);
