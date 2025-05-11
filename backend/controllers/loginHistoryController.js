@@ -77,6 +77,9 @@ exports.getTodayHistory = async (req, res) => {
     const where = {
       time: {
         [Op.between]: [startOfDay, endOfDay]
+      },
+      app: {
+        [Op.ne]: 'Diet coke'
       }
     };
 
