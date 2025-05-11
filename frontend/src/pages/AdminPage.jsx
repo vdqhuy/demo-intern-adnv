@@ -81,12 +81,17 @@ function AdminPage() {
       <div>
         <button 
           className='gen-button'
-          onClick={() => window.open('http://iamgrafana.adnovumlabs.com/public-dashboards/284d423dd7a44dc180ef021ea8e5e605?from=now-1h&to=now&timezone=browser&refresh=30s', '_blank')}
+          onClick={() => window.open('https://iamintern.adnovumlabs.com/public-dashboards/284d423dd7a44dc180ef021ea8e5e605?from=now-1h&to=now&timezone=browser&refresh=30s', '_blank')}
           >
-          View Dashboard
+          Login History Dashboard
+        </button>
+        <button 
+          className='gen-button'
+          onClick={() => window.open('https://iamintern.adnovumlabs.com/dashboards', '_blank')}
+          >
+          Access Grafana
         </button>
       </div>
-      <iframe src="http://iamgrafana.adnovumlabs.com/d/tmsOtSxZk/amazon-ec2?from=now-1h&to=now" width="100%" height="500" frameborder="0"></iframe>
     </main>
   )
 }

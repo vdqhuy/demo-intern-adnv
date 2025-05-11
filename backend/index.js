@@ -100,19 +100,6 @@ app.get('/api/me', authenticateJWT, async (req, res) => {
 // Routes
 app.use('/api/login-history', authenticateJWT, loginHistoryRoutes);
 
-app.get("/", async (req, res) => {
-  const grafanaUrl = "http://iamgrafana.adnovumlabs.com/d/tmsOtSxZk/amazon-ec2?from=now-1h&to=now"; // dashboard URL
-
-  const response = await fetch(grafanaUrl, {
-    headers: {
-      "Authorization": "Bearer <token>"
-    }
-  });
-
-  const html = await response.text();
-  res.send(html);
-});
-
 // Health check route
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
