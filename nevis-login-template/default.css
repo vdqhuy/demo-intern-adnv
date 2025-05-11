@@ -1,0 +1,217 @@
+/********************************************************
+ * Layout
+ ********************************************************/
+
+html { /* magic to position footer */
+	position: relative;
+	min-height: 100%;
+}
+
+body {
+	margin-bottom: 50px; /* == footer height */
+}
+
+.container, .container-fluid {
+ 	padding-left: 36px;
+	padding-right: 36px;
+}
+
+nav {
+	min-height: 100px;
+	padding: 36px;
+}
+
+header {
+    margin-top: 125px;
+	margin-bottom: 10px; /* h1.logintitle adds 20px => 36px */
+}
+
+.container {
+ 	min-width: 260px;
+ 	max-width: 700px;
+}
+
+h1 {
+	margin-bottom: 40px;
+    font-size: 35px;
+}
+
+footer {
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	padding: 0 36px;
+}
+
+img {
+	width: 100%;
+}
+
+/********************************************************
+ * Header
+ ********************************************************/
+#header {
+    text-align: center; /* Center the content horizontally */
+    padding: 5px 0; /* Add some padding around the header */
+}
+
+.app_title {
+    /* color: #4CAF50; */
+    color: #168ca9;
+    text-align: center;
+    font-weight: bold
+}
+
+.logo {
+	max-width: 750px;
+	max-height: 200px;
+	width: auto;
+}
+
+/********************************************************
+ * Dropdown
+ ********************************************************/
+a.dropdown-toggle {
+	text-decoration: none;
+}
+
+a.dropdown-toggle:hover {
+	color: #168CA9;
+	border-bottom: 3px solid #168CA9;
+}
+
+.dropdown-menu {
+	padding: 5px 0;
+}
+
+.dropdown-menu li > a {
+	padding: 6px 28px;
+}
+
+.dropdown-menu a > .prefix {
+	display: inline-block;
+	min-width: 22px;
+	margin-right: 28px;
+	text-align: right;
+}
+
+/********************************************************
+ * Form
+ ********************************************************/
+
+/* Labels should not be bold */
+label {
+	font-weight: normal;
+}
+
+/* Make error messages bold */
+.has-error .help-block {
+	font-weight: bold;
+}
+
+/* Change button size, by default 116px in width */
+.btn {
+	min-width: 116px;
+	padding: 3px 12px;
+}
+
+/* Disable gradient in buttons, ughhhh */
+.btn.btn-primary {
+    background-color:#168ca9 ;
+	border-color: transparent;
+	background-image: none;
+	text-shadow: none;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+}
+
+.btn.btn-primary:hover {
+    background-color:#137a8b;
+}
+
+.help-block a, .help-block a:visited {
+	color: #168CA9;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.help-block a:hover {
+	color: #168CA9;
+  text-decoration: underline;
+}
+
+/********************************************************
+ * Footer
+ ********************************************************/
+#footer {
+    text-align: center; /* Center the content horizontally */
+    padding: 20px 0; /* Add some padding around the header */
+}
+
+.logo {
+	max-width: 500px;
+	max-height: 200px;
+	width: auto;
+}
+
+#dispatchTargets {
+	margin-top: 20px;
+}
+
+/********************************************************
+ * Social login
+ ********************************************************/
+.btn.line {
+    background-color: transparent;
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 1.5em 0 1em;
+    border: 0.5px solid #ccc;
+    pointer-events: none;
+}
+
+.btn.socialLogin {
+    background-color: #fff;
+    border: thin solid #ccc;
+    color: #000;
+    font-weight: 600;
+    position: relative;
+    margin: 5px;
+    min-width: 140px;
+    width: 210px;
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.socialLogin img {
+    width: 1.5em;
+    height: 108%;
+    margin-right: 0.5em;
+}
+
+.btn.apple img {
+    width: 1.2em;
+}
+
+/********************************************************
+ * Show password
+ ********************************************************/
+.icon-inside {
+  position: relative;
+}
+
+.icon-inside input {
+  padding-right: calc(0.75rem + 1.25rem + 0.75rem);
+}
+
+.icon-inside button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-top: 0.45rem;
+  margin-right: 0.45rem;
+  background: #FFFFFF;
+  border: #FFFFFF;
+}

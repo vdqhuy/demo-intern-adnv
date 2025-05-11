@@ -32,10 +32,6 @@ exports.getByLoginId = async (req, res) => {
 exports.addLoginHistory = async (req, res) => {
   const { login_id, app, time } = req.user;
 
-  if (app === "Diet coke") {
-    return { message: 'Login history not recorded for Diet Coke' };
-  }
-
   try {
     // Check if a record with the same app, time and loginId already exists
     const existingRecord = await LoginHistory.findOne({

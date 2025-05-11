@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="${utils.escapeHtml($login.localeCode)}">
+
+	<head>
+		<title>${label.title}</title>
+
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+        <link href="${login.appDataPath}/resources/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="${login.appDataPath}/resources/bootstrap-theme.min.css" rel="stylesheet" type="text/css" media="all">
+        <link href="${login.appDataPath}/resources/default.css" rel="stylesheet" type="text/css" media="all">
+
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+        #parse("${templatePath}/js_start.vm")
+
+	</head>
+
+	<body>
+        <header id="header" class="container-fluid">
+            <img class="logo center-block" src="${resources}/adnlogo.svg" alt="Adnovum IAM Intern 2025">
+        </header>
+        <script>
+            const path = window.location.pathname;
+            const header = document.getElementById("header");
+
+            let h2Element = document.createElement('h2');
+            h2Element.classList.add('app_title', 'text-center'); 
+            if (path === "/minced-meat/") {
+                h2Element.innerHTML = 'Minced Meat App';
+            }  else if (path === "/baker-blade/") {
+                h2Element.innerHTML = 'Baker Blade App'; 
+            } else {
+                h2Element.innerHTML = 'Diet Coke App';
+            }
+            header.appendChild(h2Element);
+        </script>
+        <main id="content" class="container">
+        ${form}
+        </main>
+
+
+        #parse("${templatePath}/js_end.vm")
+	</body>
+</html>
