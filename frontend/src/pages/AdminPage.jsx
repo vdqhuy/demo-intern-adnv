@@ -57,26 +57,28 @@ function AdminPage() {
       <h2>Welcome {loginId}</h2>
       <p>Recent login history across all users:</p>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Login ID</th>
-            <th>App</th>
-            <th>Date</th>
-            <th>Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loginHistory.map((entry, index) => (
-            <tr key={index}>
-              <td>{entry.loginId}</td>
-              <td>{entry.app}</td>
-              <td>{entry.date}</td>
-              <td>{entry.time}</td>
+      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+        <table>
+          <thead>
+            <tr>
+              <th>Login ID</th>
+              <th>App</th>
+              <th>Date</th>
+              <th>Time</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {loginHistory.map((entry, index) => (
+              <tr key={index}>
+                <td>{entry.loginId}</td>
+                <td>{entry.app}</td>
+                <td>{entry.date}</td>
+                <td>{entry.time}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div>
         <button 
