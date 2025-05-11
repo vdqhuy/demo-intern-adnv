@@ -38,9 +38,15 @@ function UserPage() {
   return (
     <main className="main">
       <h1>Welcome {loginId}</h1>
-      <p>Your recent login history across this domain:</p>
+      <p style={{ marginBottom: '2rem' }}>Your recent login history across this domain:</p>
 
-      <div style={{ maxHeight: '400px', overflowY: 'auto', marginBottom: '20px' }}>
+      <div style={{ 
+            maxHeight: '400px', 
+            overflowY: 'auto',
+            width: '80%',
+            margin: '2rem auto',
+          }}
+          className="scroll-box">
         <table>
           <thead>
             <tr>

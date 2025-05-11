@@ -55,9 +55,15 @@ function AdminPage() {
     <main className="main">
       <h1>Admin Dashboard</h1>
       <h2>Welcome {loginId}</h2>
-      <p>Recent login history across all users:</p>
+      <p style={{ marginBottom: '3rem' }}>Recent login history across all users:</p>
 
-      <div style={{ maxHeight: '400px', overflowY: 'auto', marginBottom: '20px' }}>
+      <div style={{ 
+            maxHeight: '400px', 
+            overflowY: 'auto',
+            width: '80%',
+            margin: '0 auto',
+          }}
+          className="scroll-box">
         <table>
           <thead>
             <tr>
@@ -80,7 +86,7 @@ function AdminPage() {
         </table>
       </div>
 
-      <div>
+      <div style={{ marginTop: '3rem' }}>
         <button 
           style={{ marginRight: '40px' }}
           className='gen-button'

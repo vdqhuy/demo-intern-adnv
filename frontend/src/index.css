@@ -17,6 +17,8 @@ html {
   --btn-bg: #168ca9;
   --btn-bg-hover: #137a8b;
   --tittle-header: #003247;
+  --scroll-thumb: #eaeaea;
+  --scroll-track: #ffffff;
   --footer-bg: #f0f0f0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   line-height: 1.5;
@@ -32,6 +34,8 @@ html {
   --btn-bg: #6bf0ca;
   --btn-bg-hover: #2eb79a;
   --tittle-header: #eaeaea;
+  --scroll-thumb: #2b2b2b;
+  --scroll-track: #1e1e1e;
   --footer-bg: #003247;
 }
 
