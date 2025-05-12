@@ -100,7 +100,7 @@ exports.getTodayHistory = async (req, res) => {
 };
 
 // Delete login history by date (day/month/year)
-exports.deleteByDate = async (req, res) => {
+exports.deleteLoginHistoryByDate = async (req, res) => {
   const { date } = req.query; // Expecting format 'YYYY-MM-DD'
 
   if (!date) {
