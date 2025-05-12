@@ -41,7 +41,7 @@ function UserPage() {
       <p style={{ marginBottom: '2rem' }}>Your recent login history across this domain:</p>
 
       <div style={{ 
-            maxHeight: '400px', 
+            maxHeight: '512px', 
             overflowY: 'auto',
             width: '80%',
             margin: '2rem auto',

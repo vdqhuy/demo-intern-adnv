@@ -58,7 +58,7 @@ function AdminPage() {
       <p style={{ marginBottom: '3rem' }}>Recent login history across all users:</p>
 
       <div style={{ 
-            maxHeight: '400px', 
+            maxHeight: '512px', 
             overflowY: 'auto',
             width: '80%',
             margin: '0 auto',
