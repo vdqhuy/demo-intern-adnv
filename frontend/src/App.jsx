@@ -16,11 +16,11 @@ function App() {
         <Header />
 
         <Routes>
-          {/* <Route path="*" element={<UserPage />} /> */}
-          <Route path="/" element={<AdminPage />} />
+          <Route path="*" element={<UserPage />} />
+          {/* <Route path="/" element={<AdminPage />} />
           <Route path="/metrics" element={<MetricView />} />
           <Route path="/other-charts" element={<OtherChartView />} />
-          <Route path="*" element={<AdminPage />} />
+          <Route path="*" element={<AdminPage />} /> */}
         </Routes>
 
         <Footer />
