@@ -78,6 +78,9 @@ exports.getTodayHistory = async (req, res) => {
       time: {
         [Op.between]: [startOfDay, endOfDay]
       },
+      app: {
+        [Op.ne]: 'Diet coke'
+      }
     };
 
     // If the login_id is provided, add it to the where condition
