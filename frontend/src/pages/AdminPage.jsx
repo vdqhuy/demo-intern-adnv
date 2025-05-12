@@ -94,12 +94,6 @@ function AdminPage() {
           >
           Login History Dashboard
         </button>
-        <button 
-          className='gen-button'
-          onClick={() => window.open('https://iamintern.adnovumlabs.com/dashboards', '_blank')}
-          >
-          Access Grafana
-        </button>
       </div>
     </main>
   )
