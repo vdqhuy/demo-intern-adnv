@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  backend:
+    image: 869388145954.dkr.ecr.ap-southeast-1.amazonaws.com/backend/be26:latest
+    container_name: backend
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    env_file:
+      - .env.production
+  backend2:
+    image: 869388145954.dkr.ecr.ap-southeast-1.amazonaws.com/backend/bedc2:latest
+    container_name: backend2
+    ports:
+      - "3001:3001"
+    networks:
+      - app-network
+    env_file:
+      - .env.production
+
+  frontend:
+    image: 869388145954.dkr.ecr.ap-southeast-1.amazonaws.com/frontend/fe21:latest
+    container_name: frontend
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

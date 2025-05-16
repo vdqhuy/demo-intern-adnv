@@ -1,0 +1,490 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Architecture for Nevis Cluster with EKS, RDS MariaDB, NLB, NAT
+  Gateway, ECR, EBS storage and secure subnet setup.
+
+Parameters:
+  VPCName:
+    Type: String
+    Default: NevisVPC
+    Description: Please insert the VPC name
+  InternetGatewayName:
+    Type: String
+    Default: NevisGW
+    Description: Please insert the internet gateway name
+  PublicSubnetName:
+    Type: String
+    Default: Web-tier
+    Description: Please insert the public subnet name
+  PrivateSubnetName1:
+    Type: String
+    Default: App-tier
+    Description: Please insert the private subnet 1 name
+  PrivateSubnetName2:
+    Type: String
+    Default: DB-tier
+    Description: Please insert the private subnet 2 name
+  VpcCIDR:
+    Type: String
+    Default: 10.0.0.0/16
+    Description: CIDR block for the VPC
+  PublicSubnet1CIDR:
+    Type: String
+    Default: 10.0.1.0/24
+    Description: CIDR for public subnet in AZ 1
+  PrivateSubnet1CIDR:
+    Type: String
+    Default: 10.0.2.0/24
+    Description: CIDR for private subnet 1 in AZ 1
+  PrivateSubnet2CIDR:
+    Type: String
+    Default: 10.0.3.0/24
+    Description: CIDR for private subnet 2 in AZ 2
+  AvailabilityZone1:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: ''
+    Description: First availability zone
+  AvailabilityZone2:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: ''
+    Description: Second availability zone
+  DBUsername:
+    NoEcho: true
+    Type: String
+    Description: The database admin account username
+    Default: admin
+  DBPassword:
+    NoEcho: true
+    Type: String
+    Description: The database admin account password
+    MinLength: '8'
+    MaxLength: '41'
+  NodeGroupInstanceType:
+    Type: String
+    Default: t3.medium
+    AllowedValues:
+      - t3.medium
+      - t3.large
+      - m5.large
+    Description: EC2 instance type for EKS worker nodes
+
+Resources:
+
+  ## VPC and Networking ##
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Ref VPCName
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref InternetGatewayName
+
+  VPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PublicSubnet1CIDR
+      AvailabilityZone: !Ref AvailabilityZone1
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Ref PublicSubnetName
+        - Key: kubernetes.io/role/elb
+          Value: 1
+
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PrivateSubnet1CIDR
+      AvailabilityZone: !Ref AvailabilityZone1
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Ref PrivateSubnetName1
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PrivateSubnet2CIDR
+      AvailabilityZone: !Ref AvailabilityZone2
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Ref PrivateSubnetName2
+        - Key: kubernetes.io/role/internal-elb
+          Value: 1
+
+  # Route Tables
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: NevisPublicRT
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: VPCGatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  # NAT Gateway in public subnet for private subnet outbound internet access
+
+  EIPForNAT:
+    Type: AWS::EC2::EIP
+    DependsOn: VPCGatewayAttachment
+    Properties:
+      Domain: vpc
+
+  NATGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt EIPForNAT.AllocationId
+      SubnetId: !Ref PublicSubnet1
+      Tags:
+        - Key: Name
+          Value: NevisNATGateway
+
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: NevisPrivateRT1
+
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: NevisPrivateRT2
+
+  PrivateSubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet1
+      RouteTableId: !Ref PrivateRouteTable1
+
+  PrivateSubnetRouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet2
+      RouteTableId: !Ref PrivateRouteTable2
+
+  PrivateRoute1:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NATGateway
+
+  PrivateRoute2:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NATGateway
+
+  ## Security Groups ##
+
+  # For Network Load Balancer to allow inbound traffic from internet to 80 and 443
+  NLBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for Network Load Balancer
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: NevisNLB_SG
+
+  # For EKS Nodes inside private subnet - allow incoming from NLB SG
+  EKSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for EKS Worker Nodes
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !Ref NLBSecurityGroup
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          SourceSecurityGroupId: !Ref NLBSecurityGroup
+      Tags:
+        - Key: Name
+          Value: NevisEKSNode_SG
+
+  # For RDS instance access only from EKS nodes in private subnet
+  RdsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for RDS MariaDB
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          SourceSecurityGroupId: !Ref EKSSecurityGroup
+      Tags:
+        - Key: Name
+          Value: NevisRDS_SG
+
+  ## RDS MariaDB Instance ##
+  NevisDBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnet group for Nevis RDS MariaDB
+      SubnetIds:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+      Tags:
+        - Key: Name
+          Value: NevisDBSubnetGroup
+
+  NevisDBParameterGroup:
+    Type: AWS::RDS::DBParameterGroup
+    Properties:
+      Description: Parameter group for Nevis RDS MariaDB
+      Family: mariadb10.6
+      Parameters:
+        autocommit: '0'
+        tx_isolation: READ-COMMITTED
+        log_bin_trust_function_creators: '1'
+        lower_case_table_names: '1'
+        character_set_server: utf8mb4
+
+  NevisMariaDB:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: NevisTira
+      AllocatedStorage: '20'
+      DBInstanceClass: db.t3.medium
+      Engine: mariadb
+      EngineVersion: 10.6.20
+      MasterUsername: !Ref DBUsername
+      MasterUserPassword: !Ref DBPassword
+      VPCSecurityGroups:
+        - !Ref RdsSecurityGroup
+      DBSubnetGroupName: !Ref NevisDBSubnetGroup
+      DBParameterGroupName: !Ref NevisDBParameterGroup
+      MultiAZ: false
+      PubliclyAccessible: false
+      StorageEncrypted: true
+      BackupRetentionPeriod: 7
+      DeletionProtection: false
+      StorageType: gp2
+
+  ## EBS Volume for EKS Nodes (Nevis cluster storage) ##
+  NevisEBSVolume:
+    Type: AWS::EC2::Volume
+    Properties:
+      AvailabilityZone: !Ref AvailabilityZone1
+      Size: 10
+      VolumeType: gp2
+      Tags:
+        - Key: Name
+          Value: NevisEBSVolume
+
+  ## ECR Repository for container images ##
+  NevisECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: nevis-tira-repo
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Expire untagged images older than 30 days",
+                "selection": {
+                  "tagStatus": "untagged",
+                  "countType": "sinceImagePushed",
+                  "countUnit": "days",
+                  "countNumber": 30
+                },
+                "action": {
+                  "type": "expire"
+                }
+              }
+            ]
+          }
+      Tags:
+        - Key: Name
+          Value: NevisECR
+
+  ## IAM Roles ##
+
+  EKSMasterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: NevisEKSClusterMasterRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - eks.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+        - arn:aws:iam::aws:policy/AmazonEKSServicePolicy
+
+  EKSNodeInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: NevisEKSNodeInstanceRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+
+  ## EKS Cluster ##
+  NevisEKSCluster:
+    Type: AWS::EKS::Cluster
+    Properties:
+      Name: NevisCluster
+      Version: '1.31'
+      RoleArn: !GetAtt EKSMasterRole.Arn
+      ResourcesVpcConfig:
+        SubnetIds:
+          - !Ref PrivateSubnet1
+          - !Ref PrivateSubnet2
+        SecurityGroupIds:
+          - !Ref EKSSecurityGroup
+        EndpointPublicAccess: true
+        EndpointPrivateAccess: true
+
+  ## EKS Node Group ##
+  NevisEKSNodeGroup:
+    Type: AWS::EKS::Nodegroup
+    DependsOn: NevisEKSCluster
+    Properties:
+      ClusterName: !Ref NevisEKSCluster
+      NodegroupName: NevisNodeGroup
+      NodeRole: !GetAtt EKSNodeInstanceRole.Arn
+      Subnets:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+      ScalingConfig:
+        MinSize: 2
+        MaxSize: 4
+        DesiredSize: 2
+      InstanceTypes:
+        - !Ref NodeGroupInstanceType
+      DiskSize: 20
+      AmiType: AL2_x86_64
+
+  ## Network Load Balancer ##
+  NLB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: NevisNLB
+      Type: network
+      Scheme: internet-facing
+      Subnets:
+        - !Ref PublicSubnet1
+      Tags:
+        - Key: Name
+          Value: NevisNLB
+
+  # NLB Target Group for EKS Nodes (assume listener on TCP 80)
+  NLBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: NevisTargetGroup
+      Port: 80
+      Protocol: TCP
+      VpcId: !Ref VPC
+      TargetType: ip # For EKS pods, or instance for nodes
+      HealthCheckProtocol: TCP
+      HealthCheckPort: '80'
+
+  NLBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref NLBTargetGroup
+      LoadBalancerArn: !Ref NLB
+      Port: 80
+      Protocol: TCP
+
+Outputs:
+  VPCId:
+    Description: The VPC Id
+    Value: !Ref VPC
+  PublicSubnetId:
+    Description: Public Subnet ID
+    Value: !Ref PublicSubnet1
+  PrivateSubnet1Id:
+    Description: Private Subnet 1 ID
+    Value: !Ref PrivateSubnet1
+  PrivateSubnet2Id:
+    Description: Private Subnet 2 ID
+    Value: !Ref PrivateSubnet2
+  EKSClusterName:
+    Description: EKS Cluster Name
+    Value: !Ref NevisEKSCluster
+  RDSInstanceEndpoint:
+    Description: Endpoint address of MariaDB
+    Value: !GetAtt NevisMariaDB.Endpoint.Address
+  NLBAddress:
+    Description: Network Load Balancer DNS Name
+    Value: !GetAtt NLB.DNSName
+  ECRRepositoryURI:
+    Description: URI of the ECR Repository
+    Value: !GetAtt NevisECRRepository.RepositoryUri
